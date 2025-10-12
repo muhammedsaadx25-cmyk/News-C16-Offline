@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:news_app_offline/config/theme/theme_manager.dart';
+import 'package:news_app_offline/core/routes_manager/routes_manager.dart';
 
 void main() {
   runApp(const NewsApp());
@@ -10,6 +12,14 @@ class NewsApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: RoutesManager.splash ,
+      routes: RoutesManager.routes,
+      theme: ThemeManager.light,
+      darkTheme: ThemeManager.dark,
+      themeMode: ThemeMode.dark,
+      locale: Locale("en"),
+    );
   }
 }
