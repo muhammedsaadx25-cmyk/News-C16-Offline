@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:news_app_offline/core/colors_manager.dart';
 
 class ThemeManager{
@@ -6,6 +8,15 @@ class ThemeManager{
 
   );
   static final ThemeData dark = ThemeData(
-    scaffoldBackgroundColor: ColorsManager.black
+    appBarTheme: AppBarTheme(
+      backgroundColor: ColorsManager.black,
+      foregroundColor: ColorsManager.white,
+      titleTextStyle: GoogleFonts.inter(fontSize: 20.sp, fontWeight: FontWeight.w500, color: ColorsManager.white)
+   ,centerTitle: true,
+    ),
+    scaffoldBackgroundColor: ColorsManager.black,
+    drawerTheme: DrawerThemeData(
+      backgroundColor: ColorsManager.black
+    )
   );
 }
