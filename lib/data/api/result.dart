@@ -1,5 +1,4 @@
 
-import 'package:news_app_offline/api/models/Sources_response/Source.dart';
 
 abstract class Result<T>{}
 class Success<T> extends Result<T>{

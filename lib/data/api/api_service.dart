@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:news_app_offline/api/models/Sources_response/Source.dart';
-import 'package:news_app_offline/api/models/Sources_response/SourcesResponse.dart';
-import 'package:news_app_offline/api/models/articles_response/Article.dart';
-import 'package:news_app_offline/api/models/articles_response/ArticlesResponse.dart';
-import 'package:news_app_offline/api/result.dart';
+import 'package:news_app_offline/data/api/models/Sources_response/Source.dart';
+import 'package:news_app_offline/data/api/models/Sources_response/SourcesResponse.dart';
+import 'package:news_app_offline/data/api/models/articles_response/Article.dart';
+import 'package:news_app_offline/data/api/models/articles_response/ArticlesResponse.dart';
+import 'package:news_app_offline/data/api/result.dart';
 import 'package:news_app_offline/models/category_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,7 +15,7 @@ class APIService {
   static const String sourcesEndPoint = "/v2/top-headlines/sources";
   static const String articlesEndPoint = "v2/everything";
 
-  static Future<Result<List<Source>>> getSources(CategoryModel category) async {
+   Future<Result<List<Source>>> getSources(CategoryModel category) async {
     try{
       Uri url = Uri.https(baseURL, sourcesEndPoint, {
         "apiKey": APIKey,
@@ -35,7 +35,7 @@ class APIService {
   }
   
   //https://newsapi.org/v2/everything?q=bitcoin&apiKey=811d8ca53d0d4ff281843e66552efcee
-  static Future<Result<List<Article>>> getArticles(Source source)async{
+   Future<Result<List<Article>>> getArticles(Source source)async{
     try{
       var url = Uri.https(baseURL, articlesEndPoint, {
         "apiKey": APIKey,

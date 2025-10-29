@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:news_app_offline/api/api_service.dart';
-import 'package:news_app_offline/api/models/Sources_response/Source.dart'
-    show Source;
-import 'package:news_app_offline/api/models/articles_response/Article.dart';
 import 'package:news_app_offline/core/colors_manager.dart';
+import 'package:news_app_offline/data/api/api_service.dart';
+import 'package:news_app_offline/data/api/models/articles_response/Article.dart';
+import 'package:news_app_offline/data/data_sources_impl/articles_api_datasource.dart';
+import 'package:news_app_offline/data/data_sources_impl/sources_api_datasource.dart';
+import 'package:news_app_offline/data/repository_impl/articles_repository_impl.dart';
+import 'package:news_app_offline/data/repository_impl/sources_repository_impl.dart';
 import 'package:news_app_offline/features/home/sources_view/article.dart';
 import 'package:news_app_offline/features/home/sources_view/articles_viewModel.dart';
 import 'package:news_app_offline/features/home/sources_view/sources_viewModel.dart';
@@ -30,12 +32,14 @@ class _SourcesViewState extends State<SourcesView> {
     // TODO: implement initState
     super.initState();
     fetchData();
-
   }
 
-  void fetchData()async{
-    sourcesProvider = SourcesViewModel();
-    articlesProvider = ArticlesViewModel();
+  void fetchData() async {
+    sourcesProvider = SourcesViewModel(
+        sourcesRepository: SourcesRepositoryImpl(
+            sourcesDataSource: SourcesAPiDataSource(apiService: APIService()))
+    );
+    articlesProvider = ArticlesViewModel(articlesRepository: ArticlesRepositoryImpl(articlesDataSource: ArticlesApiDataSource(apiService: APIService())));
     await sourcesProvider.fetchSources(widget.category);
     articlesProvider.fetchArticles(sourcesProvider.sources[0]);
   }
@@ -51,17 +55,19 @@ class _SourcesViewState extends State<SourcesView> {
       children: [
         Consumer<SourcesViewModel>(
           builder: (context, sourcesProvider, child) {
-            if(sourcesProvider.isLoading){
-               return Center( child: CircularProgressIndicator(),);
+            if (sourcesProvider.isLoading) {
+              return Center(child: CircularProgressIndicator(),);
             }
-            if(sourcesProvider.errorMessage != null){
-              return Center(child: Text(sourcesProvider.errorMessage!, style: TextStyle(color: ColorsManager.white),),);
+            if (sourcesProvider.errorMessage != null) {
+              return Center(child: Text(sourcesProvider.errorMessage!,
+                style: TextStyle(color: ColorsManager.white),),);
             }
             return DefaultTabController(
               length: sourcesProvider.sources.length,
               child: TabBar(
-                onTap: (index){
-                  articlesProvider.fetchArticles(sourcesProvider.sources[index]);
+                onTap: (index) {
+                  articlesProvider.fetchArticles(
+                      sourcesProvider.sources[index]);
                 },
                 isScrollable: true,
                 dividerColor: Colors.transparent,
@@ -86,11 +92,12 @@ class _SourcesViewState extends State<SourcesView> {
 
         Consumer<ArticlesViewModel>(
             builder: (context, articlesProvider, child) {
-              if(articlesProvider.isLoading){
+              if (articlesProvider.isLoading) {
                 return Center(child: CircularProgressIndicator(),);
               }
-              if(articlesProvider.errorMessage != null){
-                return Center(child: Text(articlesProvider.errorMessage ?? '',style: TextStyle(color: Colors.white), ),);
+              if (articlesProvider.errorMessage != null) {
+                return Center(child: Text(articlesProvider.errorMessage ?? '',
+                  style: TextStyle(color: Colors.white),),);
               }
               List<Article> articles = articlesProvider.articles;
               return Expanded(child:
@@ -98,7 +105,7 @@ class _SourcesViewState extends State<SourcesView> {
                   itemBuilder: (context, index) =>
                       ArticleItem(article: articles[index]),
                   separatorBuilder: (context, index) => SizedBox(height: 16,),
-                  itemCount:articles.length));
+                  itemCount: articles.length));
             })
       ],
     ),);
